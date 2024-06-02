@@ -1,5 +1,6 @@
 var1: 10
 var2: 20
+var3: 30
 
 init: [
      cmd: #setup
@@ -13,6 +14,7 @@ setup: [
         cmd: create, id: var6, value: 3
         cmd: #times, id: var7, value1: #var4, value2: #var6
         cmd: print, value: #var7
+        cmd: print, value: #var3
 ]
 
 times: [
