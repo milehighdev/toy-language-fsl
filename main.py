@@ -30,7 +30,6 @@ class Parser:
         lines = script.strip().split('\n')
         #initialize the current function to None
         current_function = None
-
         #iterate through the lines
         for line in lines:
             line = line.strip()
@@ -64,7 +63,6 @@ class Parser:
                             print("Invalid value for variable")
             elif line == ']':
                 current_function = None
-
 
     #parse the value of a variable and check for references to other variables
     def parse_value(self, value):
