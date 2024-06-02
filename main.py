@@ -49,18 +49,16 @@ class Parser:
                     key = key.strip()
                     value = value.strip()
                     # print(f'{key}: {value}')
+                    #parse the value of the var which should be numeric
+                    try:
+                        self.vars[key] = self.parse_value(value)
+                    except ValueError:
+                        print("Invalid value for variable")
                     #if there is a current function, we know that the variable is a command
                     if current_function:
                         #parse the command and add it to the current function
                         command = self.process_command(line)
                         self.functions[current_function].append(command)
-                    #otherwise, we know that it's a variable and we add it to the variables dictionary
-                    else:
-                        # All variables should be numeric or else it will raise an exception
-                        try:
-                            self.vars[key] = self.parse_value(value)
-                        except ValueError:
-                            print("Invalid value for variable")
             elif line == ']':
                 current_function = None
 
