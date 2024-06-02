@@ -18,6 +18,12 @@ class Parser:
         self.vars = {}
         self.functions = {}
 
+    # Trigger the script by parsing the script and running the init function
+    def trigger_script(self, scripts):
+        for script in scripts:
+            self.parse_script(script)
+            self.run_function('#init', {})
+
     # Parse the script by going line by line and store variables and functions
     def parse_script(self, script):
         #split the script into lines
@@ -139,12 +145,6 @@ class Parser:
         else:
             self.run_function(cmd, command)
 
-    def run_script(self, scripts):
-        for script in scripts:
-            self.parse_script(script)
-            if Commands.INIT.value in self.functions:
-                self.run_function('#init', {})
-
 
 if __name__ == "__main__":
     # Read scripts from files
@@ -154,5 +154,5 @@ if __name__ == "__main__":
         script2 = file.read()
 
     parser = Parser()
-    parser.run_script([script1, script2])
+    parser.trigger_script([script1, script2])
 
