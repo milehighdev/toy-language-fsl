@@ -35,32 +35,31 @@ class Parser:
             line = line.strip()
             if not line:
                 continue
-            #check if the line contains a colon
-            if ':' in line:
-                #if the line matches pattern of': [', we know that it's the start of an array of commands
-                if re.search(r':\s*\[$', line):
-                    #get the name/operation of the function or command
-                    current_function = line.split(':')[0].strip()
-                    #if the function already exsits, we just overide with with empty list to store the commands
-                    self.functions[current_function] = []
-                else:
-                    #get the name and value of the variable by splitting on colon
-                    key, value = line.split(':', 1)
-                    key = key.strip()
-                    value = value.strip()
-                    # print(f'{key}: {value}')
-                    #parse the value of the var which should be numeric
-                    try:
-                        self.vars[key] = self.parse_value(value)
-                    except ValueError:
-                        print("Invalid value for variable")
-                    #if there is a current function, we know that the variable is a command
-                    if current_function:
-                        #parse the command and add it to the current function
-                        command = self.process_command(line)
-                        self.functions[current_function].append(command)
+            #if the line matches pattern of': [', we know that it's the start of an array of commands
+            if re.search(r':\s*\[$', line):
+                #get the name/operation of the function or command
+                current_function = line.split(':')[0].strip()
+                #if the function already exsits, we just overide with with empty list to store the commands
+                self.functions[current_function] = []
+            #if the line is ']', we know that the array of commands has ended
             elif line == ']':
                 current_function = None
+            elif current_function:
+                # parse the command and add it to the current function
+                command = self.process_command(line)
+                self.functions[current_function].append(command)
+            else:
+                #get the name and value of the variable by splitting on colon
+                key, value = line.split(':', 1)
+                key = key.strip()
+                value = value.strip()
+                # print(f'{key}: {value}')
+                #parse the value of the var which should be numeric
+                try:
+                    self.vars[key] = self.parse_value(value)
+                except ValueError:
+                    print("Invalid value for variable")
+
 
     #parse the value of a variable and check for references to other variables
     def parse_value(self, value):
@@ -74,6 +73,7 @@ class Parser:
                     return float(value)
                 except ValueError:
                     return value
+
 
     # Parse the command and return a dictionary
     def process_command(self, line):
@@ -96,8 +96,8 @@ class Parser:
             function_name = function_name[1:]
             #if we find the function in our functions dictionary, we can run each command we stored in the function
             if function_name in self.functions:
-                commands = self.functions[function_name]
-                for command in commands:
+                function = self.functions[function_name]
+                for command in function:
                     #create a new dictionary to store the final parsed command
                     final_command = {}
                     for key, value in command.items():
@@ -142,6 +142,7 @@ class Parser:
             self.run_function(cmd, command)
 
 
+
 if __name__ == "__main__":
     # Read scripts from files
     with open('sample-script.txt', 'r') as file:
@@ -151,4 +152,5 @@ if __name__ == "__main__":
 
     parser = Parser()
     parser.trigger_script([script1, script2])
+
 
