@@ -12,7 +12,7 @@ class Commands(Enum):
     DIVIDE = 'divide'
     PRINT = 'print'
     INIT = 'init'
-class Interpreter:
+class Parser:
     # Use dictionaries to store variables, functions and commands within each function so they can be used globally
     def __init__(self):
         self.variables = {}
@@ -152,6 +152,6 @@ if __name__ == "__main__":
     with open('script2.txt', 'r') as file:
         script2 = file.read()
 
-    interpreter = Interpreter()
-    interpreter.run_script([script1, script2])
+    parser = Parser()
+    parser.run_script([script1, script2])
 
