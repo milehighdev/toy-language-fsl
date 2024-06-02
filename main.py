@@ -47,7 +47,7 @@ class Parser:
                     #if there is a current function, we know that the variable is a command
                     if current_function:
                         #parse the command and add it to the current function
-                        command = self.parse_command(line)
+                        command = self.process_command(line)
                         self.functions[current_function].append(command)
                     #otherwise, we know that it's a variable and we add it to the variables dictionary
                     else:
@@ -74,7 +74,7 @@ class Parser:
                     return value
 
     # Parse the command and return a dictionary
-    def parse_command(self, line):
+    def process_command(self, line):
         command = {}
         #we need to split the line by commas so each part of the command can be parsed
         line_parts = line.split(',')
