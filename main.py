@@ -15,7 +15,7 @@ class Commands(Enum):
 class Parser:
     # Use dictionaries to store variables, functions and commands within each function so they can be used globally
     def __init__(self):
-        self.variables = {}
+        self.vars = {}
         self.functions = {}
 
     # Parse the script by going line by line and store variables and functions
@@ -53,30 +53,17 @@ class Parser:
                     else:
                         # All variables should be numeric or else it will raise an exception
                         try:
-                            self.variables[key] = self.parse_value(value)
+                            self.vars[key] = self.parse_value(value)
                         except ValueError:
                             print("Invalid value for variable")
             elif line == ']':
                 current_function = None
 
-    # Parse the command and return a dictionary
-    def parse_command(self, line):
-        command = {}
-        #we need to split the line by commas so each part of the command can be parsed
-        parts = line.split(',')
-        for part in parts:
-            #this is another key/value for a command so we can split it again by colon
-            if ':' in part:
-                key, value = part.split(':', 1)
-                key = key.strip()
-                value = value.strip()
-                command[key] = value
-        return command
 
-   #parse the value of a variable and check for references to other variables
+    #parse the value of a variable and check for references to other variables
     def parse_value(self, value):
         if isinstance(value, str) and value.startswith('#'):
-            return self.variables.get(value[1:], None)
+            return self.vars.get(value[1:], None)
         else:
             try:
                 return int(value)
@@ -85,6 +72,20 @@ class Parser:
                     return float(value)
                 except ValueError:
                     return value
+
+    # Parse the command and return a dictionary
+    def parse_command(self, line):
+        command = {}
+        #we need to split the line by commas so each part of the command can be parsed
+        line_parts = line.split(',')
+        for part in line_parts:
+            #this is another key/value for a command so we can split it again by colon
+            if ':' in part:
+                key, value = part.split(':', 1)
+                key = key.strip()
+                value = value.strip()
+                command[key] = value
+        return command
 
 
     #run each command in our function
@@ -110,12 +111,12 @@ class Parser:
     def run_command(self, command):
         cmd = command['cmd']
         if cmd == Commands.CREATE.value:
-            self.variables[command['id']] = self.parse_value(command['value'])
+            self.vars[command['id']] = self.parse_value(command['value'])
         elif cmd == Commands.UPDATE.value:
-            self.variables[command['id']] = self.parse_value(command['value'])
+            self.vars[command['id']] = self.parse_value(command['value'])
         elif cmd == Commands.DELETE.value:
-            if command['id'] in self.variables:
-                del self.variables[command['id']]
+            if command['id'] in self.vars:
+                del self.vars[command['id']]
         elif cmd == Commands.PRINT.value:
             value = self.parse_value(command['value'])
             print(value if value else 'undefined')
@@ -128,13 +129,13 @@ class Parser:
                     param_values[k] = values
             value1, value2 = param_values.values()
             if cmd == Commands.ADD.value:
-                self.variables[command['id']] = value1 + value2
+                self.vars[command['id']] = value1 + value2
             elif cmd == Commands.SUBTRACT.value:
-                self.variables[command['id']] = value1 - value2
+                self.vars[command['id']] = value1 - value2
             elif cmd == Commands.MULTIPLY.value:
-                self.variables[command['id']] = value1 * value2
+                self.vars[command['id']] = value1 * value2
             elif cmd == Commands.DIVIDE.value:
-                self.variables[command['id']] = value1 / value2
+                self.vars[command['id']] = value1 / value2
         else:
             self.run_function(cmd, command)
 
