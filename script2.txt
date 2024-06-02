@@ -1,0 +1,22 @@
+ script2 = """
+    var1: 10
+    var2: 20
+
+
+init: [
+     cmd: #setup
+ ]
+
+setup: [
+        cmd: add, id: var4, value1: #var1, value2: #var2
+        cmd: print, value: #var4
+        cmd: update, id: var2, value: 15
+        cmd: print, value: #var2
+        cmd: create, id: var6, value: 3
+        cmd: #times, id: var7, value1: #var4, value2: #var6
+        cmd: print, value: #var7
+]
+
+times: [
+       cmd: multiply, id: $id, value1: $value1, value2: $value2
+    ]
